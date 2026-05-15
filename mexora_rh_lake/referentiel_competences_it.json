@@ -1,0 +1,14 @@
+{
+  "familles": {
+    "Programmation": {
+      "Python": ["python", "py", "pandas"],
+      "Java": ["java", "jee", "spring"],
+      "JavaScript": ["javascript", "js", "node.js"]
+    },
+    "Data": {
+      "SQL": ["sql", "mysql", "postgresql", "oracle"],
+      "Spark": ["spark", "pyspark", "big data"],
+      "BI": ["power bi", "tableau", "looker", "reporting"]
+    }
+  }
+}

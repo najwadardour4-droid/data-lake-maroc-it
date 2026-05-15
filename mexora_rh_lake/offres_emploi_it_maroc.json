@@ -1,0 +1,28 @@
+{
+  "offres": [
+    {
+      "id_offre": "OFFRE_001",
+      "titre_poste": "Data Engineer Junior",
+      "entreprise": "Mexora Tech",
+      "ville": "Casablanca",
+      "date_publication": "2024-05-10",
+      "source": "rekrute",
+      "salaire_brut": "12000 MAD",
+      "experience_requise": "0-2 ans",
+      "competences_brut": "Python, SQL, Spark",
+      "description": "Nous cherchons un ingénieur data pour gérer nos pipelines ETL."
+    },
+    {
+      "id_offre": "OFFRE_002",
+      "titre_poste": "Analyste BI",
+      "entreprise": "DataMaroc",
+      "ville": "Tanger",
+      "date_publication": "2024-05-12",
+      "source": "linkedin",
+      "salaire_brut": "9000 MAD",
+      "experience_requise": "3 ans",
+      "competences_brut": "Power BI, Excel",
+      "description": "Expert en reporting et business intelligence."
+    }
+  ]
+}

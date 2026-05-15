@@ -1,3 +1,7 @@
+import json
+import re
+import pandas as pd
+from pathlib import Path
 def extraire_competences(df: pd.DataFrame, referentiel_path: str) -> pd.DataFrame:
     """
     Extrait les compétences IT depuis deux sources :

@@ -1,3 +1,4 @@
+from pathlib import Path
 import duckdb
 
 def construire_gold(data_lake_root: str):
@@ -39,7 +40,7 @@ def construire_gold(data_lake_root: str):
     df_salaires = con.execute(f"""
         SELECT
             profil_normalise        AS profil,
-            ville_std               AS ville,
+            ville                   AS ville,
             type_contrat_std        AS type_contrat,
             COUNT(*)                AS nb_offres,
             COUNT(*) FILTER (WHERE salaire_connu)
@@ -59,7 +60,7 @@ def construire_gold(data_lake_root: str):
             ROUND(MAX(salaire_max_mad) FILTER (WHERE salaire_connu), 0)
                                     AS salaire_max_observe
         FROM '{silver_offres}'
-        GROUP BY profil_normalise, ville_std, type_contrat_std
+        GROUP BY profil_normalise, ville, type_contrat_std
         HAVING COUNT(*) >= 5    -- minimum 5 offres pour fiabilité statistique
         ORDER BY nb_offres DESC
     """).df()
@@ -69,7 +70,7 @@ def construire_gold(data_lake_root: str):
     print("[GOLD] Construction offres_par_ville...")
     df_villes = con.execute(f"""
         SELECT
-            ville_std                           AS ville,
+            ville                               AS ville,
             region_admin,
             profil_normalise                    AS profil,
             annee,
@@ -94,7 +95,7 @@ def construire_gold(data_lake_root: str):
     df_entreprises = con.execute(f"""
         SELECT
             entreprise,
-            ville_std                               AS ville,
+            ville                                 AS ville,
             COUNT(*)                                AS nb_offres_publiees,
             COUNT(DISTINCT profil_normalise)        AS nb_profils_differents,
             ROUND(AVG(salaire_median_mad) FILTER (WHERE salaire_connu), 0)
