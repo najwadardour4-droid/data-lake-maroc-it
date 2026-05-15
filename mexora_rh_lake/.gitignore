@@ -1,0 +1,13 @@
+# Python 
+__pycache__/
+*.pyc
+
+# Data 
+*.parquet
+/mexora_rh_lake/data_lake/
+mexora_rh_lake/analysis/
+
+# Windows/VS Code (optional)
+.vscode/
+Thumbs.db
+.DS_Store
