@@ -171,7 +171,7 @@ Les données finales produites dans la zone Gold permettent :
 - D'analyser les tendances salariales.
 - D'étudier la répartition des contrats.
 - D'aider les responsables RH à prendre des décisions basées sur les données.
-
+![Géographie du marché IT](analysis/geo_marche_it.png)
 ---
 
 ## 👩‍💻 Réalisé par
