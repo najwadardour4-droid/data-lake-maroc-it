@@ -164,3 +164,87 @@ def normaliser_experience(df: pd.DataFrame) -> pd.DataFrame:
     )
     df = pd.concat([df, resultats], axis=1)
     return df
+def normaliser_villes(df: pd.DataFrame) -> pd.DataFrame:
+    """Standardise les noms de villes."""
+    mapping_villes = {
+        'casa': 'Casablanca',
+        'casablanca': 'Casablanca',
+        'CASABLANCA': 'Casablanca',
+        'rabat': 'Rabat',
+        'RABAT': 'Rabat',
+        'tanger': 'Tanger',
+        'TANGER': 'Tanger',
+        'tanja': 'Tanger',
+        'fes': 'Fès',
+        'fès': 'Fès',
+        'FES': 'Fès',
+        'marrakech': 'Marrakech',
+        'MARRAKECH': 'Marrakech',
+        'agadir': 'Agadir',
+        'AGADIR': 'Agadir',
+        'oujda': 'Oujda',
+        'meknes': 'Meknès',
+        'meknès': 'Meknès',
+    }
+
+    def standardiser_ville(v):
+        if pd.isna(v):
+            return 'Inconnue'
+        v_clean = str(v).strip()
+        return mapping_villes.get(v_clean.lower(), v_clean.title())
+
+    df['ville_std'] = df['ville'].apply(standardiser_ville)
+
+    # Ajouter region_admin
+    mapping_regions = {
+        'Casablanca': 'Casablanca-Settat',
+        'Rabat': 'Rabat-Salé-Kénitra',
+        'Tanger': 'Tanger-Tétouan-Al Hoceïma',
+        'Fès': 'Fès-Meknès',
+        'Meknès': 'Fès-Meknès',
+        'Marrakech': 'Marrakech-Safi',
+        'Agadir': 'Souss-Massa',
+        'Oujda': 'Oriental',
+    }
+    df['region_admin'] = df['ville_std'].map(mapping_regions).fillna('Autre')
+
+    print(f"[SILVER] Villes : {df['ville_std'].nunique()} villes uniques standardisées")
+    return df
+
+
+def normaliser_type_contrat(df: pd.DataFrame) -> pd.DataFrame:
+    """Standardise les types de contrat."""
+    
+    # Chercher la colonne même si elle n'existe pas
+    if 'type_contrat' not in df.columns:
+        df['type_contrat'] = 'Non précisé'
+    
+    def standardiser_contrat(v):
+        if pd.isna(v):
+            return 'Non précisé'
+        s = str(v).lower().strip()
+        if any(x in s for x in ['cdi', 'indéterminée', 'permanent', 'indeterminee']):
+            return 'CDI'
+        if any(x in s for x in ['cdd', 'déterminée', 'determinee', 'temporaire']):
+            return 'CDD'
+        if any(x in s for x in ['freelance', 'free-lance', 'indépendant', 'consultant']):
+            return 'Freelance'
+        if any(x in s for x in ['stage', 'intern', 'pfe']):
+            return 'Stage'
+        if any(x in s for x in ['alternance', 'apprentissage']):
+            return 'Alternance'
+        return 'Autre'
+
+    df['type_contrat_std'] = df['type_contrat'].apply(standardiser_contrat)
+    print(f"[SILVER] Contrats : {df['type_contrat_std'].value_counts().to_dict()}")
+    return df
+
+
+def ajouter_colonnes_date(df: pd.DataFrame) -> pd.DataFrame:
+    """Extrait annee et mois depuis date_publication."""
+    df['date_publication'] = pd.to_datetime(df['date_publication'], errors='coerce')
+    df['annee'] = df['date_publication'].dt.year.astype(str)
+    df['mois'] = df['date_publication'].dt.month.apply(lambda x: f"{int(x):02d}" if pd.notna(x) else '')
+    df['date_publication'] = df['date_publication'].astype(str)
+    print(f"[SILVER] Dates : colonnes annee/mois ajoutées")
+    return df

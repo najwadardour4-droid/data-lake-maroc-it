@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_fichier": "mexora_rh_lake/offres_emploi_it_maroc.json",
+    "date_ingestion": "2026-05-17T14:20:12.118785",
+    "partition": "rekrute/2024_05",
+    "nb_offres": 1
+  },
+  "offres": [
+    {
+      "id_offre": "OFFRE_001",
+      "titre_poste": "Data Engineer Junior",
+      "entreprise": "Mexora Tech",
+      "ville": "Casablanca",
+      "date_publication": "2024-05-10",
+      "source": "rekrute",
+      "salaire_brut": "12000 MAD",
+      "experience_requise": "0-2 ans",
+      "competences_brut": "Python, SQL, Spark",
+      "description": "Nous cherchons un ingénieur data pour gérer nos pipelines ETL."
+    }
+  ]
+}

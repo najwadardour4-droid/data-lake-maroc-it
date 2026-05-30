@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source_fichier": "mexora_rh_lake/offres_emploi_it_maroc.json",
+    "date_ingestion": "2026-05-17T14:20:12.120115",
+    "partition": "linkedin/2024_05",
+    "nb_offres": 1
+  },
+  "offres": [
+    {
+      "id_offre": "OFFRE_002",
+      "titre_poste": "Analyste BI",
+      "entreprise": "DataMaroc",
+      "ville": "Tanger",
+      "date_publication": "2024-05-12",
+      "source": "linkedin",
+      "salaire_brut": "9000 MAD",
+      "experience_requise": "3 ans",
+      "competences_brut": "Power BI, Excel",
+      "description": "Expert en reporting et business intelligence."
+    }
+  ]
+}

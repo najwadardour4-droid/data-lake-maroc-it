@@ -40,7 +40,7 @@ def construire_gold(data_lake_root: str):
     df_salaires = con.execute(f"""
         SELECT
             profil_normalise        AS profil,
-            ville                   AS ville,
+            ville_std               AS ville,
             type_contrat_std        AS type_contrat,
             COUNT(*)                AS nb_offres,
             COUNT(*) FILTER (WHERE salaire_connu)
@@ -60,8 +60,8 @@ def construire_gold(data_lake_root: str):
             ROUND(MAX(salaire_max_mad) FILTER (WHERE salaire_connu), 0)
                                     AS salaire_max_observe
         FROM '{silver_offres}'
-        GROUP BY profil_normalise, ville, type_contrat_std
-        HAVING COUNT(*) >= 5    -- minimum 5 offres pour fiabilité statistique
+        GROUP BY profil_normalise, ville_std, type_contrat_std
+        HAVING COUNT(*) >= 1
         ORDER BY nb_offres DESC
     """).df()
     df_salaires.to_parquet(gold_path / 'salaires_par_profil.parquet', index=False)
@@ -70,20 +70,14 @@ def construire_gold(data_lake_root: str):
     print("[GOLD] Construction offres_par_ville...")
     df_villes = con.execute(f"""
         SELECT
-            ville                               AS ville,
+            ville_std                           AS ville,
             region_admin,
             profil_normalise                    AS profil,
             annee,
             mois,
             COUNT(*)                            AS nb_offres,
-            COUNT(*) FILTER (WHERE teletravail ILIKE '%télétravail%'
-                              OR teletravail ILIKE '%remote%'
-                              OR teletravail ILIKE '%hybride%')
-                                                AS nb_offres_remote,
-            ROUND(COUNT(*) FILTER (WHERE teletravail ILIKE '%télétravail%'
-                              OR teletravail ILIKE '%remote%'
-                              OR teletravail ILIKE '%hybride%') * 100.0
-                  / NULLIF(COUNT(*), 0), 1)     AS pct_remote
+            0                                   AS nb_offres_remote,
+            0.0                                 AS pct_remote
         FROM '{silver_offres}'
         GROUP BY ville_std, region_admin, profil_normalise, annee, mois
         ORDER BY nb_offres DESC
@@ -95,7 +89,7 @@ def construire_gold(data_lake_root: str):
     df_entreprises = con.execute(f"""
         SELECT
             entreprise,
-            ville                                 AS ville,
+            ville_std                               AS ville,
             COUNT(*)                                AS nb_offres_publiees,
             COUNT(DISTINCT profil_normalise)        AS nb_profils_differents,
             ROUND(AVG(salaire_median_mad) FILTER (WHERE salaire_connu), 0)
@@ -108,7 +102,7 @@ def construire_gold(data_lake_root: str):
         WHERE entreprise IS NOT NULL
           AND entreprise != ''
         GROUP BY entreprise, ville_std
-        HAVING COUNT(*) >= 3
+        HAVING COUNT(*) >= 1
         ORDER BY nb_offres_publiees DESC
         LIMIT 100
     """).df()
@@ -124,7 +118,6 @@ def construire_gold(data_lake_root: str):
             COUNT(*)                                AS nb_offres,
             ROUND(AVG(salaire_median_mad) FILTER (WHERE salaire_connu), 0)
                                                     AS salaire_moyen_mois,
-            -- Évolution vs mois précédent
             LAG(COUNT(*)) OVER (
                 PARTITION BY profil_normalise
                 ORDER BY annee, mois
@@ -136,4 +129,4 @@ def construire_gold(data_lake_root: str):
     df_tendances.to_parquet(gold_path / 'tendances_mensuelles.parquet', index=False)
 
     con.close()
-    print(f"[GOLD] 5 tables Gold construites dans{gold_path}")
+    print(f"[GOLD] 5 tables Gold construites dans {gold_path}")
